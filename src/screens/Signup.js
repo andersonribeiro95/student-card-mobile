@@ -1,7 +1,7 @@
 // screens/FirstAccess.js
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import axios from "axios";
+import {createUser } from "services/api";
 
 const FirstAccess = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -17,11 +17,7 @@ const FirstAccess = ({ navigation }) => {
 
     try {
       // Faz a chamada à API para criar a conta
-      const response = await axios.post("http://localhost:5000/api/auth/signup", {
-        name,
-        email,
-        password,
-      });
+      const response = await createUser(name, email, password);
 
       // Verifica se a criação foi bem-sucedida
       if (response.status === 201) {

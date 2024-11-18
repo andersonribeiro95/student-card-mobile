@@ -43,7 +43,7 @@ const Login = ({ navigation }) => {
         <Text style={styles.linkText}>Esqueci minha senha</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("PrimeiroAcesso")}>
+      <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
         <Text style={styles.linkText}>Primeiro acesso</Text>
       </TouchableOpacity>
     </ImageBackground>

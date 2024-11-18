@@ -1,15 +1,37 @@
 // screens/FirstAccess.js
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import axios from "axios";
 
-const FirstAccess = () => {
+const FirstAccess = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleFirstAccess = () => {
-    // Aqui você adicionaria a lógica de criação de conta
-    Alert.alert("Conta Criada", "Sua conta foi criada com sucesso!");
+  const handleFirstAccess = async () => {
+    // Valida o domínio do e-mail
+    if (!email.endsWith("@esuda.edu")) {
+      Alert.alert("E-mail inválido", "O e-mail deve ser institucional (@esuda.edu).");
+      return;
+    }
+
+    try {
+      // Faz a chamada à API para criar a conta
+      const response = await axios.post("http://localhost:5000/api/auth/signup", {
+        name,
+        email,
+        password,
+      });
+
+      // Verifica se a criação foi bem-sucedida
+      if (response.status === 201) {
+        Alert.alert("Conta Criada", "Sua conta foi criada com sucesso!");
+        navigation.navigate("Login"); // Redireciona para a página de login
+      }
+    } catch (error) {
+      console.error("Erro ao criar conta:", error);
+      Alert.alert("Erro", "Não foi possível criar a conta. Tente novamente.");
+    }
   };
 
   return (
@@ -80,3 +102,4 @@ const styles = StyleSheet.create({
 });
 
 export default FirstAccess;
+

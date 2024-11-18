@@ -6,7 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import Login from "./src/screens/Login";
 import EsqueciSenha from "./src/screens/EsqueciSenha";
-import PrimeiroAcesso from "./src/screens/PrimeiroAcesso";
+import Signup from "./src/screens/Signup";
 import GetStarted from "./src/screens/GetStarted";
 import Home from "./src/screens/Home";
 import Scan from "./src/screens/Scan";
@@ -24,7 +24,7 @@ const App = () => {
       >
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="EsqueciSenha" component={EsqueciSenha} />
-        <Stack.Screen name="PrimeiroAcesso" component={PrimeiroAcesso} />
+        <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="GetStarted" component={GetStarted} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Scan" component={Scan} />

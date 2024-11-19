@@ -1,7 +1,7 @@
 // screens/FirstAccess.js
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { createUser } from "../services/api";
+import { registerUser } from "../services/api";
 
 const FirstAccess = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -9,24 +9,16 @@ const FirstAccess = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const handleFirstAccess = async () => {
-    // Valida o domínio do e-mail
-    if (!email.endsWith("@esuda.edu.br")) {
-      Alert.alert("E-mail inválido", "O e-mail deve ser institucional (@esuda.edu).");
-      return;
-    }
-
-    try {
-      // Faz a chamada à API para criar a conta
-      const response = await createUser(name, email, password);
-      console.log(response.data);
-      // Verifica se a criação foi bem-sucedida
-      if (response.status === 201) {
-        Alert.alert("Conta Criada", "Sua conta foi criada com sucesso!");
-        navigation.navigate("Login"); // Redireciona para a página de login
+    if (name && email && password) {
+      const response = await registerUser(name, email, password);
+      if (response.success) {
+        Alert.alert("Success", "Account created successfully!");
+        navigation.replace("Login");
+      } else {
+        Alert.alert("Signup Failed", response.message);
       }
-    } catch (error) {
-      console.error("Erro ao criar conta:", error);
-      Alert.alert("Erro", "Não foi possível criar a conta. Tente novamente.");
+    } else {
+      Alert.alert("Error", "Please fill all fields correctly.");
     }
   };
 

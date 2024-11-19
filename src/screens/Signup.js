@@ -1,7 +1,7 @@
 // screens/FirstAccess.js
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import {createUser } from "services/api";
+import { createUser } from "../services/api";
 
 const FirstAccess = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -10,7 +10,7 @@ const FirstAccess = ({ navigation }) => {
 
   const handleFirstAccess = async () => {
     // Valida o domínio do e-mail
-    if (!email.endsWith("@esuda.edu")) {
+    if (!email.endsWith("@esuda.edu.br")) {
       Alert.alert("E-mail inválido", "O e-mail deve ser institucional (@esuda.edu).");
       return;
     }
@@ -18,7 +18,7 @@ const FirstAccess = ({ navigation }) => {
     try {
       // Faz a chamada à API para criar a conta
       const response = await createUser(name, email, password);
-
+      console.log(response.data);
       // Verifica se a criação foi bem-sucedida
       if (response.status === 201) {
         Alert.alert("Conta Criada", "Sua conta foi criada com sucesso!");

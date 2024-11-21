@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   ImageBackground,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loginUser } from "../services/api";
@@ -17,10 +18,13 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (email && password) {
+      setLoading(true);
       const response = await loginUser(email, password);
+      setLoading(false);
       if (response.success) {
         // Armazena o token JWT no AsyncStorage
         await AsyncStorage.setItem("token", response.data.token);
@@ -91,8 +95,13 @@ const Login = ({ navigation }) => {
       <TouchableOpacity
         style={styles.button}
         onPress={handleLogin} // Chama a função handleLogin ao pressionar o botão
+        disabled={loading}
       >
-        <Text style={styles.buttonText}>Entrar</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Entrar</Text>
+        )}
       </TouchableOpacity>
 
       {/* Links Esqueci Minha Senha e Primeiro Acesso */}

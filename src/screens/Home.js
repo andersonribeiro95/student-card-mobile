@@ -53,10 +53,15 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28, // Aumenta o tamanho da fonte para maior destaque
     fontWeight: "bold",
     marginBottom: 20,
-    fontFamily: 'Courier New'
+    fontFamily: 'Arial', // Usa uma fonte mais moderna e legível
+    color: '#333', // Adiciona uma cor mais suave para o texto
+    textAlign: 'center', // Centraliza o texto
+    textShadowColor: 'rgba(0, 0, 0, 0.2)', // Adiciona sombra ao texto
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   image: {
     width: 250, // Largura da imagem

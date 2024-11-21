@@ -10,11 +10,13 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loginUser } from "../services/api";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (email && password) {
@@ -57,24 +59,33 @@ const Login = ({ navigation }) => {
       <Text style={styles.title}>Login</Text>
 
       {/* Campo de e-mail */}
-      <TextInput
-        style={styles.input}
-        placeholder="E-mail"
-        value={email}
-        onChangeText={handleEmailChange}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+      <View style={styles.inputContainer}>
+        <Icon name="user" size={20} color="#000" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="E-mail"
+          value={email}
+          onChangeText={handleEmailChange}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </View>
       {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
       {/* Campo de senha */}
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+      <View style={styles.inputContainer}>
+        <Icon name="lock" size={20} color="#000" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!showPassword}
+        />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#000" />
+        </TouchableOpacity>
+      </View>
 
       {/* Botão de login */}
       <TouchableOpacity
@@ -109,12 +120,21 @@ const styles = StyleSheet.create({
     color: "#d86615",
     marginBottom: 20,
   },
-  input: {
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     width: "70%",
-    padding: 15,
     backgroundColor: "#fff",
     borderRadius: 5,
-    marginBottom: 5, // Diminuído para espaço compacto
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 15,
   },
   errorText: {
     color: "red",

@@ -72,7 +72,7 @@ const Login = ({ navigation }) => {
 
           {/* Campo de e-mail */}
           <View style={styles.inputContainer}>
-            <Icon name="user" size={20} color="#000" style={styles.icon} />
+            <Icon name="at" size={20} color="#000" style={styles.icon} />
             <TextInput
               style={styles.input}
               placeholder="E-mail"

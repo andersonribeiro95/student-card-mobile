@@ -27,7 +27,7 @@ const ForgotPassword = () => {
         <View style={styles.modal}>
           <Text style={styles.title}>Esqueci Minha Senha</Text>
           <View style={styles.inputContainer}>
-            <Icon name="user" size={20} color="#000" style={styles.icon} />
+            <Icon name="at" size={20} color="#000" style={styles.icon} />
             <TextInput
               style={styles.input}
               placeholder="Digite seu e-mail"

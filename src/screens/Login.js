@@ -169,6 +169,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
+    borderWidth: 1, // Adiciona a borda
+    borderColor: "#ccc", // Cor da borda
   },
   input: {
     flex: 1,

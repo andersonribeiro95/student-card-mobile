@@ -6,56 +6,69 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  ImageBackground, // Importe o componente ImageBackground
 } from "react-native";
 
 const Home = ({ navigation }) => {
   const [documents, setDocuments] = useState([]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Seus Documentos</Text>
-      <Image
-        source={require('../assets/download.png')} // Certifique-se de que o caminho está correto
-        style={styles.image}
-      />
-      {documents.length === 0 ? (
-        <View style={styles.placeholder}>
-          <Text>Você ainda não adicionou nenhum documento..</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={documents}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate("DocumentDetails", { item })}
-            >
-              {/* DocumentCard component */}
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item.id}
+    <ImageBackground
+      source={require("../assets/fundo1.jpg")} // Verifique o caminho da imagem de fundo
+      style={styles.background}
+      resizeMode="repeat"
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Seus Documentos</Text>
+        <Image
+          source={require('../assets/download.png')} // Certifique-se de que o caminho está correto
+          style={styles.image}
         />
-      )}
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => navigation.navigate("Scan")}
-      >
-        <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
-    </View>
+        {documents.length === 0 ? (
+          <View style={styles.placeholder}>
+            <Text>Você ainda não adicionou nenhum documento..</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={documents}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate("DocumentDetails", { item })}
+              >
+                {/* DocumentCard component */}
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        )}
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate("Scan")}
+        >
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 };
 
 // Add styles here
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     flex: 1,
-    backgroundColor: "#71CE7E",
+    backgroundColor: "rgba(113, 206, 126, 0.8)", // Adiciona um fundo semi-transparente para melhor visibilidade
     padding: 20,
   },
   title: {
     fontSize: 28, // Aumenta o tamanho da fonte para maior destaque
     fontWeight: "bold",
     marginBottom: 20,
+    marginTop: 20, // Adiciona margem superior para ajustar o espaçamento
     fontFamily: 'Arial', // Usa uma fonte mais moderna e legível
     color: '#333', // Adiciona uma cor mais suave para o texto
     textAlign: 'center', // Centraliza o texto
@@ -67,6 +80,7 @@ const styles = StyleSheet.create({
     width: 250, // Largura da imagem
     height: 100, // Altura da imagem
     marginBottom: 20, // Margem inferior
+    marginTop: 5, // Adiciona margem superior para ajustar o espaçamento
     borderRadius: 75, // Cantos arredondados
     resizeMode: 'cover', // Ajuste da imagem
   },

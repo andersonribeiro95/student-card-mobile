@@ -8,6 +8,7 @@ import {
   Alert,
   ImageBackground,
   ActivityIndicator,
+  AccessibilityInfo,
   Image, // Importe o componente Image
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,6 +21,7 @@ const Login = ({ navigation }) => {
   const [emailError, setEmailError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
 
   const handleLogin = async () => {
     if (email && password) {
@@ -30,12 +32,19 @@ const Login = ({ navigation }) => {
         // Armazena o token JWT no AsyncStorage
         await AsyncStorage.setItem("token", response.data.token);
         navigation.replace("Home");
+        AccessibilityInfo.announceForAccessibility("Login bem-sucedido. Redirecionando para a página inicial.");
       } else {
         Alert.alert("Login Falhou", response.message);
+        AccessibilityInfo.announceForAccessibility("Login falhou. " + response.message);
       }
     } else {
       Alert.alert("Erro", "Por favor, insira o e-mail e a senha.");
+      AccessibilityInfo.announceForAccessibility("Erro. Por favor, insira o e-mail e a senha.");
     }
+  };
+
+  const toggleAccessibilityOptions = () => {
+    setHighContrast(!highContrast);
   };
 
   const handleEmailChange = (text) => {
@@ -61,39 +70,47 @@ const Login = ({ navigation }) => {
       style={styles.background}
       resizeMode="cover"
     >
-      <View style={styles.container}>
+      <View style={[styles.container, highContrast && styles.highContrast]}>
         <Image
           source={require("../assets/esuda.jpg")} // Verifique o caminho da imagem
           style={styles.logo}
         />
 
         <View style={styles.modal}>
-          <Text style={styles.title}>Login</Text>
+          <Text style={[styles.title, highContrast && styles.highContrastText]} accessibilityRole="header">Login</Text>
 
           {/* Campo de e-mail */}
           <View style={styles.inputContainer}>
             <Icon name="at" size={20} color="#000" style={styles.icon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, highContrast && styles.highContrastText]}
               placeholder="E-mail"
+              placeholderTextColor={highContrast ? "#ccc" : "#000"}
               value={email}
               onChangeText={handleEmailChange}
               keyboardType="email-address"
               autoCapitalize="none"
+              accessibilityLabel="Campo de e-mail"
             />
           </View>
-          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-
+          {emailError ? (
+            <Text style={[styles.errorText, highContrast && styles.highContrastText]}>
+              {emailError}
+            </Text>
+          ) : null}
+          
           {/* Campo de senha */}
           <View style={styles.inputContainer}>
             <Icon name="lock" size={20} color="#000" style={styles.icon} />
             <TextInput
-              style={styles.input}
-              placeholder="Senha"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-            />
+               style={[styles.input, highContrast && styles.highContrastText]}
+               placeholder="Senha"
+               placeholderTextColor={highContrast ? "#ccc" : "#000"}
+               value={password}
+               onChangeText={setPassword}
+               secureTextEntry={!showPassword}
+               accessibilityLabel="Campo de senha"
+             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#000" />
             </TouchableOpacity>
@@ -101,9 +118,11 @@ const Login = ({ navigation }) => {
 
           {/* Botão de login */}
           <TouchableOpacity
-            style={styles.button}
-            onPress={handleLogin} // Chama a função handleLogin ao pressionar o botão
+            style={[styles.button, highContrast && styles.highContrastButton]}
+            onPress={handleLogin}
             disabled={loading}
+            accessibilityRole="button"
+            accessibilityLabel="Botão de login"
           >
             {loading ? (
               <ActivityIndicator size="small" color="#fff" />
@@ -113,12 +132,28 @@ const Login = ({ navigation }) => {
           </TouchableOpacity>
 
           {/* Links Esqueci Minha Senha e Primeiro Acesso */}
-          <TouchableOpacity onPress={() => navigation.navigate("EsqueciSenha")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("EsqueciSenha")}
+            accessibilityRole="button"
+            accessibilityLabel="Esqueci minha senha"
+          >
             <Text style={styles.linkText}>Esqueci minha senha</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Signup")}
+            accessibilityRole="button"
+            accessibilityLabel="Primeiro acesso"
+          >
             <Text style={styles.linkText}>Primeiro acesso</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.accessibilityButton}
+            onPress={toggleAccessibilityOptions}
+            accessibilityLabel="Alternar modo de alto contraste"
+          >
+            <Icon name="universal-access" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
       </View>
@@ -138,6 +173,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
   },
+  highContrast: {
+    backgroundColor: "#000",
+  },
+  accessibilityButton: {
+    position: "absolute",
+    top: 350,
+    right: 20,
+    backgroundColor: "#DB8206",
+    borderRadius: 30,
+    padding: 10,
+    elevation: 5,
+    zIndex: 10,
+  },
   modal: {
     backgroundColor: "#fff",
     padding: 20,
@@ -152,6 +200,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#d86615",
     marginBottom: 20,
+  },
+  highContrastText: {
+    color: "#fff",
   },
   logo: {
     width: 300, // Ajuste o tamanho da imagem conforme necessário
@@ -175,6 +226,12 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     padding: 10,
+    color: "#000",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginBottom: 10,
   },
   icon: {
     marginRight: 10,
@@ -190,6 +247,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 5,
     marginBottom: 10,
+  },
+  highContrastButton: {
+    backgroundColor: "#444",
   },
   buttonText: {
     color: "#fff",

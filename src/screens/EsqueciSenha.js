@@ -3,13 +3,17 @@ import React, { useState } from "react";
 import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity, Alert, ImageBackground } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome'; // Importe o componente Icon
 
-
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [highContrast, setHighContrast] = useState(false); // Adicione o estado highContrast
 
   const handlePasswordReset = () => {
     // Aqui você adicionaria a lógica para enviar o e-mail de recuperação de senha
     Alert.alert("Recuperação de Senha", "Instruções de recuperação de senha foram enviadas para o seu e-mail.");
+  };
+
+  const toggleAccessibilityOptions = () => {
+    setHighContrast(!highContrast);
   };
 
   return (
@@ -18,26 +22,35 @@ const ForgotPassword = () => {
       style={styles.background}
       resizeMode="cover"
     >
+      <View style={[styles.container, highContrast && styles.highContrast]}>
+        <TouchableOpacity
+          style={styles.accessibilityButton}
+          onPress={toggleAccessibilityOptions}
+          accessibilityLabel="Alternar modo de alto contraste"
+        >
+          <Icon name="universal-access" size={24} color="#fff" />
+        </TouchableOpacity>
 
-      <View style={styles.container}>
         <Image
           source={require("../assets/esuda.jpg")} // Verifique o caminho da imagem
           style={styles.logo}
         />
         <View style={styles.modal}>
-          <Text style={styles.title}>Esqueci Minha Senha</Text>
+          <Text style={[styles.title, highContrast && styles.highContrastText]}>Esqueci Minha Senha</Text>
           <View style={styles.inputContainer}>
             <Icon name="at" size={20} color="#000" style={styles.icon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, highContrast && styles.highContrastText]}
               placeholder="Digite seu e-mail"
+              placeholderTextColor={highContrast ? "#ccc" : "#000"}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              accessibilityLabel="Campo de e-mail"
             />
           </View>
-          <TouchableOpacity style={styles.button} onPress={handlePasswordReset}>
+          <TouchableOpacity style={[styles.button, highContrast && styles.highContrastButton]} onPress={handlePasswordReset}>
             <Text style={styles.buttonText}>Enviar Instruções</Text>
           </TouchableOpacity>
         </View>
@@ -52,6 +65,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+  },
+  highContrast: {
+    backgroundColor: "#000",
+  },
+  accessibilityButton: {
+    position: "absolute",
+    top: 250,
+    right: 20,
+    backgroundColor: "#DB8206",
+    borderRadius: 30,
+    padding: 10,
+    elevation: 5,
+    zIndex: 10,
   },
   background: {
     flex: 1,
@@ -81,6 +107,9 @@ const styles = StyleSheet.create({
     color: "#d86615",
     marginBottom: 20,
   },
+  highContrastText: {
+    color: "#fff",
+  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -105,6 +134,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 5,
     marginBottom: 10,
+  },
+  highContrastButton: {
+    backgroundColor: "#444",
   },
   buttonText: {
     color: "#fff",

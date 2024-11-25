@@ -21,7 +21,7 @@ const Home = ({ navigation }) => {
       <View style={styles.container}>
         <Text style={styles.title}>Seus Documentos</Text>
         <Image
-          source={require('../assets/esuda.jpg')} // Certifique-se de que o caminho está correto
+          source={require('../assets/download.png')} // Certifique-se de que o caminho está correto
           style={styles.image}
         />
         {documents.length === 0 ? (

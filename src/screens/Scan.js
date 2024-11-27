@@ -28,6 +28,7 @@ const Scan = ({ navigation }) => {
 
   const handleBarcodeScanned = ({ type, data }) => {
     setScanned(true);
+    // console.log(`Barcode scanned: ${type} - ${documentId}`);
     navigation.navigate("AddDocument", { data });
   };
 

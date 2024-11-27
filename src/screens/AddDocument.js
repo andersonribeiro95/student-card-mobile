@@ -1,15 +1,26 @@
 // screens/AddDocument.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { getDocumentData } from "../services/api";
+import DocumentCard from "../components/DocumentCard";
 
 const AddDocument = ({ route, navigation }) => {
   const { data } = route.params;
 
-  // Parse data to extract document info
-  const documentInfo = {
-    // Extracted fields
-  };
+  const [documentInfo, setDocumentInfo] = useState(null);
 
+  useEffect(() => {
+    const getDocumentInfo = async () => {
+      if (data) {
+        const { documentData } = await getDocumentData(data);
+        setDocumentInfo(documentData);
+      }
+    };
+
+    getDocumentInfo();
+  }, [data]);
+
+  console.log(`Document info: ${JSON.stringify(documentInfo)}`);
   const handleAdd = () => {
     // Add document to state/storage
     navigation.navigate("Home");
@@ -19,7 +30,7 @@ const AddDocument = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Adicionar</Text>
       <Text style={styles.text}>Verifique as informações do seu documento</Text>
-      {/* Display document card with documentInfo */}
+      {documentInfo ? <DocumentCard data={documentInfo} /> : <Text>Carregando...</Text>}
       <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
         <Text style={styles.addButtonText}>Adicionar</Text>
       </TouchableOpacity>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,28 @@ import {
   ImageBackground, // Importe o componente ImageBackground
 } from "react-native";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FontAwesome } from "@expo/vector-icons";
+import Card from "../components/Card";
+import { logoutUser } from "../services/api";
+
 const Home = ({ navigation }) => {
   const [documents, setDocuments] = useState([]);
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      const documents = await AsyncStorage.getItem("documents");
+      if (documents) {
+        setDocuments(JSON.parse(documents));
+      }
+    };
+    fetchDocuments();
+  }, []);
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigation.replace("Login");
+  };
 
   return (
     <ImageBackground
@@ -24,6 +44,9 @@ const Home = ({ navigation }) => {
           source={require('../assets/download.png')} // Certifique-se de que o caminho está correto
           style={styles.image}
         />
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <FontAwesome name="sign-out" size={24} color="black" />
+        </TouchableOpacity>
         {documents.length === 0 ? (
           <View style={styles.placeholder}>
             <Text>Você ainda não adicionou nenhum documento..</Text>
@@ -35,7 +58,7 @@ const Home = ({ navigation }) => {
               <TouchableOpacity
                 onPress={() => navigation.navigate("DocumentDetails", { item })}
               >
-                {/* DocumentCard component */}
+                <Card {...item} />
               </TouchableOpacity>
             )}
             keyExtractor={(item) => item.id}

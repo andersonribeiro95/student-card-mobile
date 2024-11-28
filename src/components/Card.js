@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+
 const Card = ({ name, _id, validity }) => {
   return (
     <View style={styles.card}>
@@ -9,6 +10,7 @@ const Card = ({ name, _id, validity }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
@@ -31,4 +33,5 @@ const styles = StyleSheet.create({
     color: "#333",
   },
 });
+
 export default Card;

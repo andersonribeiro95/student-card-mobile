@@ -1,8 +1,9 @@
 // screens/AddDocument.js
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { ActivityIndicator, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { getDocumentData } from "../services/api";
 import DocumentCard from "../components/DocumentCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AddDocument = ({ route, navigation }) => {
   const { data } = route.params;
@@ -10,27 +11,45 @@ const AddDocument = ({ route, navigation }) => {
   const [documentInfo, setDocumentInfo] = useState(null);
 
   useEffect(() => {
-    const getDocumentInfo = async () => {
-      if (data) {
-        const { documentData } = await getDocumentData(data);
-        setDocumentInfo(documentData);
-      }
+    const fetchDocumentData = async () => {
+      const parsedData = await parseDocumentData(data);
+      setDocumentInfo(parsedData);
     };
 
-    getDocumentInfo();
+    fetchDocumentData();
   }, [data]);
 
-  console.log(`Document info: ${JSON.stringify(documentInfo)}`);
-  const handleAdd = () => {
-    // Add document to state/storage
-    navigation.navigate("Home");
+  const parseDocumentData = async (data) => {
+    const documentData = await getDocumentData(data);
+    return {
+      _id: documentData[0]._id || "Unknown _id",
+      name: documentData[0].name || "Unknown name",
+      cpf: documentData[0].cpf || "Unknown cpf",
+      birthDate: documentData[0].birthDate || "Unknown date",
+      institution: documentData[0].institution || "Unknown institution",
+      course: documentData[0].course || "Unknown course",
+      issuer: documentData[0].issuer || "Unknown issuer",
+      validity: documentData[0].validity || "Unknown date",
+    };
   };
 
-  return (
+  const handleAdd = async () => {
+    try {
+      const documentList =
+        JSON.parse(await AsyncStorage.getItem("documents")) || [];
+      documentList.push(documentInfo);
+      await AsyncStorage.setItem("documents", JSON.stringify(documentList));
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Error saving document", error);
+    }
+  };
+
+  return documentInfo ? (
     <View style={styles.container}>
       <Text style={styles.title}>Adicionar</Text>
       <Text style={styles.text}>Verifique as informações do seu documento</Text>
-      {documentInfo ? <DocumentCard data={documentInfo} /> : <Text>Carregando...</Text>}
+      {documentInfo && <DocumentCard {...documentInfo} />}
       <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
         <Text style={styles.addButtonText}>Adicionar</Text>
       </TouchableOpacity>
@@ -40,6 +59,10 @@ const AddDocument = ({ route, navigation }) => {
       >
         <Text>Cancelar</Text>
       </TouchableOpacity>
+    </View>
+  ) : (
+    <View style={styles.container}>
+      <ActivityIndicator size="large" color="#0000ff" />
     </View>
   );
 };

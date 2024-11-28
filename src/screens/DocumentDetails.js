@@ -1,49 +1,45 @@
 // screens/DocumentDetails.js
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import DocumentCard from "../components/DocumentCard";
+import { FontAwesome } from "@expo/vector-icons";
+import DeletePopup from "../components/DeletePopup";
 
 const DocumentDetails = ({ route, navigation }) => {
   const { item } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleDelete = () => {
-    // Delete document from state/storage
-    setModalVisible(false);
-    navigation.navigate("Home");
+  const handleDelete = async () => {
+    try {
+      const documents = await AsyncStorage.getItem("documents");
+      const parsedDocuments = JSON.parse(documents);
+      const updatedDocuments = parsedDocuments.filter(
+        (doc) => doc._id !== item._id
+      );
+      await AsyncStorage.setItem("documents", JSON.stringify(updatedDocuments));
+      setModalVisible(false);
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Falha ao remover documento:", error);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Detalhes</Text>
-      {/* Display document details */}
+      {item && <DocumentCard {...item} />}
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => setModalVisible(true)}
       >
-        {/* Trash Icon */}
+        <FontAwesome name="trash" size={24} color="black" />
       </TouchableOpacity>
-
-      {/* Delete Confirmation Modal */}
-      <Modal transparent={true} visible={modalVisible}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text>Excluir documento</Text>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text>X</Text>
-            </TouchableOpacity>
-            <Text>Tem certeza que deseja excluir este documento?</Text>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text>Cancelar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleDelete}
-              style={styles.confirmDeleteButton}
-            >
-              <Text style={styles.confirmDeleteButtonText}>Excluir</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <DeletePopup
+        visible={modalVisible}
+        onDelete={handleDelete}
+        onCancel={() => setModalVisible(false)}
+      />
     </View>
   );
 };
@@ -58,14 +54,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    marginTop: 40,
     marginBottom: 20,
   },
   deleteButton: {
     position: "absolute",
-    top: 20,
+    top: 50,
     right: 20,
     padding: 10,
-    backgroundColor: "red",
+    backgroundColor: "transparent",
     borderRadius: 5,
   },
   modalContainer: {

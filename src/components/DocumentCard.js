@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+
 const DocumentCard = ({
   name,
   cpf,
@@ -18,6 +19,7 @@ const DocumentCard = ({
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
   return (
     <View style={styles.card}>
       <Text style={styles.text}>Nome: {name}</Text>
@@ -36,6 +38,7 @@ const DocumentCard = ({
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   card: {
     padding: 20,
@@ -57,4 +60,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+
 export default DocumentCard;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -13,19 +13,24 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
 import Card from "../components/Card";
 import { logoutUser } from "../services/api";
+import { useFocusEffect } from '@react-navigation/native';
 
 const Home = ({ navigation }) => {
   const [documents, setDocuments] = useState([]);
 
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      const documents = await AsyncStorage.getItem("documents");
-      if (documents) {
-        setDocuments(JSON.parse(documents));
-      }
-    };
-    fetchDocuments();
-  }, []);
+  const fetchDocuments = async () => {
+    const user = JSON.parse(await AsyncStorage.getItem('user'));
+    console.log("user is here: ", user);
+    if (user.documents) {
+      setDocuments(user.documents);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchDocuments();
+    }, [])
+  );
 
   const handleLogout = async () => {
     await logoutUser();
@@ -61,7 +66,7 @@ const Home = ({ navigation }) => {
                 <Card {...item} />
               </TouchableOpacity>
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item._id}
           />
         )}
         <TouchableOpacity
@@ -127,6 +132,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 30,
     lineHeight: 30,
+  },
+  logoutButton: {
+    position: "absolute",
+    top: 55,
+    right: 20,
+    padding: 10,
+    backgroundColor: "transparent",
+    borderRadius: 5,
   },
 });
 

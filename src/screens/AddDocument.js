@@ -35,10 +35,17 @@ const AddDocument = ({ route, navigation }) => {
 
   const handleAdd = async () => {
     try {
-      const documentList =
-        JSON.parse(await AsyncStorage.getItem("documents")) || [];
-      documentList.push(documentInfo);
-      await AsyncStorage.setItem("documents", JSON.stringify(documentList));
+      const user = JSON.parse(await AsyncStorage.getItem("user"));
+      if (user.documents.some(doc => doc._id === documentInfo._id)) {
+        console.log("Documento já existe!");
+        // TODO: Mostrar uma mensagem para o usuário dizendo que o documento
+        // já existe e retornar para a tela Home.
+        navigation.navigate("Home");
+        return;
+      }
+      
+      user.documents.push(documentInfo);
+      await AsyncStorage.setItem("user", JSON.stringify(user));
       navigation.navigate("Home");
     } catch (error) {
       console.error("Error saving document", error);

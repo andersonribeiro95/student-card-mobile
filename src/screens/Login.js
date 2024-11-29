@@ -30,7 +30,7 @@ const Login = ({ navigation }) => {
       setLoading(false);
       if (response.success) {
         // Armazena o token JWT no AsyncStorage
-        await AsyncStorage.setItem("token", response.data.token);
+        // await AsyncStorage.setItem("token", response.data.token);
         navigation.replace("Home");
         AccessibilityInfo.announceForAccessibility("Login bem-sucedido. Redirecionando para a página inicial.");
       } else {

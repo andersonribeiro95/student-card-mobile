@@ -7,29 +7,34 @@ const api = axios.create({
 });
 
 
-const setToken = async (token) => {
+const setUser = async (data) => {
   try {
-    await AsyncStorage.setItem('userToken', token);
+    const user = {
+      _id: data._id,
+      token: data.token,
+      documents: []
+    };
+    await AsyncStorage.setItem('user', JSON.stringify(user));
   } catch (error) {
-    console.error('Falha ao salvar o token!', error);
+    console.error('Falha ao salvar o usuário!', error);
   }
 };
 
-const getToken = async () => {
+const getUser = async () => {
   try {
-    const token = await AsyncStorage.getItem('userToken');
-    return token;
+    const user = JSON.parse(await AsyncStorage.getItem('user'));
+    // console.log(user);
+    return user;
   } catch (error) {
-    console.error('Falha ao recuperar o token!', error);
+    console.error('Falha ao recuperar o usuário!', error);
     return null;
   }
 };
 
-
 export const loginUser = async (email, password) => {
   try {
     const response = await api.post("/api/auth/login", { email, password });
-    setToken(response.data.token);
+    setUser(response.data);
     return { success: true, data: response.data };
   } catch (error) {
     return { success: false, message: error.response.data.message };
@@ -39,16 +44,25 @@ export const loginUser = async (email, password) => {
 export const registerUser = async (name, email, password) => {
   try {
     const response = await api.post("/api/auth/signup", { name, email, password });
-    setToken(response.data.token);
+    setUser(response.data);
     return { success: true, data: response.data };
   } catch (error) {
     return { success: false, message: error.response.data.message };
   }
 };
 
+export const logoutUser = async () => {
+  try {
+    await AsyncStorage.removeItem("user");
+    return { success: true, message: "Logout bem-sucedido" };
+  } catch (error) {
+    return { success: false, message: "Falha ao sair" };
+  }
+};
+
 export const getDocumentData = async (qrCodeData) => {
   try {
-    const token = await getToken();
+    const { token } = await getUser();
     if (!token) {
       throw new Error('Token not available');
     }
@@ -56,7 +70,7 @@ export const getDocumentData = async (qrCodeData) => {
       { headers: { Authorization: `Bearer ${token}` } }
     );
     // console.log(`response.data[0]: ${JSON.stringify(response.data[0])}`);
-    return response.data[0].name;
+    return response.data;
   } catch (error) {
     console.error(error);
   }

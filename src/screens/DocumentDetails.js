@@ -12,12 +12,11 @@ const DocumentDetails = ({ route, navigation }) => {
 
   const handleDelete = async () => {
     try {
-      const documents = await AsyncStorage.getItem("documents");
-      const parsedDocuments = JSON.parse(documents);
-      const updatedDocuments = parsedDocuments.filter(
+      const user = JSON.parse(await AsyncStorage.getItem("user"));
+      user.documents = user.documents.filter(
         (doc) => doc._id !== item._id
       );
-      await AsyncStorage.setItem("documents", JSON.stringify(updatedDocuments));
+      await AsyncStorage.setItem("user", JSON.stringify(user));
       setModalVisible(false);
       navigation.navigate("Home");
     } catch (error) {

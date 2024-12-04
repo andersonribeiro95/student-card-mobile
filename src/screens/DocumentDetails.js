@@ -1,10 +1,11 @@
 // screens/DocumentDetails.js
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Modal } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DocumentCard from "../components/DocumentCard";
 import { FontAwesome } from "@expo/vector-icons";
 import DeletePopup from "../components/DeletePopup";
+import fundo1 from "../assets/fundo1.jpg"; // Importe a imagem
 
 const DocumentDetails = ({ route, navigation }) => {
   const { item } = route.params;
@@ -25,9 +26,14 @@ const DocumentDetails = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Detalhes</Text>
-      {item && <DocumentCard {...item} />}
+     <ImageBackground
+      source={fundo1}
+      style={styles.background}
+      resizeMode="cover" 
+      >     
+    <View style={styles.container}>   
+      <Text style={styles.title}>Detalhes</Text>   
+    {item && <DocumentCard {...item} />}
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => setModalVisible(true)}
@@ -38,8 +44,10 @@ const DocumentDetails = ({ route, navigation }) => {
         visible={modalVisible}
         onDelete={handleDelete}
         onCancel={() => setModalVisible(false)}
-      />
-    </View>
+      />     
+    </View> 
+   
+     </ImageBackground> 
   );
 };
 
@@ -47,14 +55,21 @@ const DocumentDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor: "rgba(113, 206, 126, 0.8)", // Adiciona um fundo semi-transparente para melhor visibilidade
     padding: 20,
-    backgroundColor: "#fff",
+    marginTop: 20,
   },
   title: {
-    fontSize: 24,
+  fontSize: 28, // Aumenta o tamanho da fonte para maior destaque
     fontWeight: "bold",
-    marginTop: 40,
     marginBottom: 20,
+    marginTop: 20, // Adiciona margem superior para ajustar o espaçamento
+    fontFamily: 'Arial', // Usa uma fonte mais moderna e legível
+    color: '#333', // Adiciona uma cor mais suave para o texto
+    textAlign: 'left', // Centraliza o texto
+    textShadowColor: 'rgba(0, 0, 0, 0.2)', // Adiciona sombra ao texto
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   deleteButton: {
     position: "absolute",
@@ -63,6 +78,11 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "transparent",
     borderRadius: 5,
+  },
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   modalContainer: {
     flex: 1,

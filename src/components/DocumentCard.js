@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-
+import { getProfilePicture } from "../services/api";
+import { formatDate } from "../utils/date";
 const DocumentCard = ({
   name,
   cpf,
@@ -11,17 +12,16 @@ const DocumentCard = ({
   issuer,
   _id,
   validity,
+  profilePicture,
 }) => {
-  const formatDate = (date) => {
-    const d = new Date(date);
-    const day = `0${d.getDate()}`.slice(-2);
-    const month = `0${d.getMonth() + 1}`.slice(-2);
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <View style={styles.card}>
+      <View style={styles.profilePictureContainer}>
+        <Image
+          source={getProfilePicture(profilePicture)}
+          style={styles.profilePicture}
+        />
+      </View>
       <Text style={styles.text}>Nome: {name}</Text>
       <Text style={styles.text}>CPF: {cpf}</Text>
       <Text style={styles.text}>
@@ -50,6 +50,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 1,
+  },
+  profilePictureContainer: {
+    alignItems: "center",
+  },
+  profilePicture: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    marginBottom: 10,
+    alignItems: "center",
   },
   text: {
     fontSize: 16,

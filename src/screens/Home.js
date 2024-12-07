@@ -32,6 +32,21 @@ const Home = ({ navigation }) => {
     }, [])
   );
 
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const fetchDocuments = async () => {
+  //       const documents = await AsyncStorage.getItem("documents");
+  //       if (documents) {
+  //         setDocuments(JSON.parse(documents));
+  //       }
+  //     };
+
+  //     fetchDocuments();
+
+  //     return () => {};
+  //   }, [])
+  // );
+
   const handleLogout = async () => {
     await logoutUser();
     navigation.replace("Login");

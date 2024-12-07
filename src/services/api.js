@@ -6,7 +6,6 @@ const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 
-
 const setUser = async (data) => {
   try {
     const user = {
@@ -74,4 +73,12 @@ export const getDocumentData = async (qrCodeData) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+export const getProfilePicture = (profilePicture) => {
+  if (profilePicture) {
+    const pictureURL = API_URL + "/" + profilePicture.replace(/\\/g, "/");
+    return { uri: pictureURL };
+  }
+  return require("../assets/profile-picture.jpg");
 };

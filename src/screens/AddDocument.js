@@ -1,9 +1,120 @@
+// // screens/AddDocument.js
+// import React, { useEffect, useState } from "react";
+// import { ActivityIndicator, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+// import { getDocumentData } from "../services/api";
+// import DocumentCard from "../components/DocumentCard";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// const AddDocument = ({ route, navigation }) => {
+//   const { data } = route.params;
+
+//   const [documentInfo, setDocumentInfo] = useState(null);
+
+//   useEffect(() => {
+//     const fetchDocumentData = async () => {
+//       const parsedData = await parseDocumentData(data);
+//       setDocumentInfo(parsedData);
+//     };
+
+//     fetchDocumentData();
+//   }, [data]);
+
+//   const parseDocumentData = async (data) => {
+//     const documentData = await getDocumentData(data);
+//     return {
+//       _id: documentData[0]._id || "Unknown _id",
+//       name: documentData[0].name || "Unknown name",
+//       cpf: documentData[0].cpf || "Unknown cpf",
+//       birthDate: documentData[0].birthDate || "Unknown date",
+//       institution: documentData[0].institution || "Unknown institution",
+//       course: documentData[0].course || "Unknown course",
+//       issuer: documentData[0].issuer || "Unknown issuer",
+//       validity: documentData[0].validity || "Unknown date",
+//       profilePicture: documentData[0].profilePicture || null,
+//     };
+//   };
+
+//   const handleAdd = async () => {
+//     try {
+//       const documentList =
+//         JSON.parse(await AsyncStorage.getItem("documents")) || [];
+//       documentList.push(documentInfo);
+//       await AsyncStorage.setItem("documents", JSON.stringify(documentList));
+//       navigation.navigate("Home");
+//     } catch (error) {
+//       console.error("Error saving document", error);
+//     }
+//   };
+
+//   return documentInfo ? (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Adicionar</Text>
+//       <Text style={styles.text}>Verifique as informações do seu documento</Text>
+//       {documentInfo && <DocumentCard {...documentInfo} />}
+//       <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+//         <Text style={styles.addButtonText}>Adicionar</Text>
+//       </TouchableOpacity>
+//       <TouchableOpacity
+//         style={styles.cancelButton}
+//         onPress={() => navigation.navigate("Home")}
+//       >
+//         <Text>Cancelar</Text>
+//       </TouchableOpacity>
+//     </View>
+//   ) : (
+//     <View style={styles.container}>
+//       <ActivityIndicator size="large" color="#0000ff" />
+//     </View>
+//   );
+// };
+
+// // Add styles here
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     padding: 20,
+//     backgroundColor: "#fff",
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     marginBottom: 20,
+//   },
+//   text: {
+//     fontSize: 16,
+//     marginBottom: 20,
+//     textAlign: "center",
+//   },
+//   addButton: {
+//     backgroundColor: "#4CAF50",
+//     padding: 10,
+//     borderRadius: 5,
+//     marginBottom: 10,
+//   },
+//   addButtonText: {
+//     color: "#fff",
+//     fontSize: 16,
+//   },
+//   cancelButton: {
+//     backgroundColor: "#f44336",
+//     padding: 10,
+//     borderRadius: 5,
+//   },
+// });
+// export default AddDocument;
+
+
+
+
 // screens/AddDocument.js
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { ActivityIndicator, View, Text, StyleSheet, TouchableOpacity, ImageBackground } from "react-native";
 import { getDocumentData } from "../services/api";
 import DocumentCard from "../components/DocumentCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import fundo1 from "../assets/fundo1.jpg"; // Importe a imagem
 
 const AddDocument = ({ route, navigation }) => {
   const { data } = route.params;
@@ -30,6 +141,7 @@ const AddDocument = ({ route, navigation }) => {
       course: documentData[0].course || "Unknown course",
       issuer: documentData[0].issuer || "Unknown issuer",
       validity: documentData[0].validity || "Unknown date",
+      profilePicture: documentData[0].profilePicture || null,
     };
   };
 
@@ -53,22 +165,28 @@ const AddDocument = ({ route, navigation }) => {
   };
 
   return documentInfo ? (
-    <View style={styles.container}>
-      <Text style={styles.title}>Adicionar</Text>
-      <Text style={styles.text}>Verifique as informações do seu documento</Text>
-      {documentInfo && <DocumentCard {...documentInfo} />}
-      <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
-        <Text style={styles.addButtonText}>Adicionar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.cancelButton}
-        onPress={() => navigation.navigate("Home")}
-      >
-        <Text>Cancelar</Text>
-      </TouchableOpacity>
-    </View>
+    <ImageBackground
+      source={fundo1}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Adicionar</Text>
+        <Text style={styles.text}>Verifique as informações do seu documento</Text>
+        {documentInfo && <DocumentCard {...documentInfo} />}
+        <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+          <Text style={styles.addButtonText}>Adicionar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => navigation.navigate("Home")}
+        >
+          <Text>Cancelar</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   ) : (
-    <View style={styles.container}>
+    <View style={styles.loadingContainer}>
       <ActivityIndicator size="large" color="#0000ff" />
     </View>
   );
@@ -81,7 +199,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.8)", // Adiciona um fundo semi-transparente para melhor visibilidade
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#fff",
+  },
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   title: {
     fontSize: 24,
@@ -109,4 +238,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
+
 export default AddDocument;
+

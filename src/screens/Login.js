@@ -9,11 +9,11 @@ import {
   ImageBackground,
   ActivityIndicator,
   AccessibilityInfo,
-  Image, // Importe o componente Image
+  Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loginUser } from "../services/api";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -29,17 +29,21 @@ const Login = ({ navigation }) => {
       const response = await loginUser(email, password);
       setLoading(false);
       if (response.success) {
-        // Armazena o token JWT no AsyncStorage
-        // await AsyncStorage.setItem("token", response.data.token);
         navigation.replace("Home");
-        AccessibilityInfo.announceForAccessibility("Login bem-sucedido. Redirecionando para a página inicial.");
+        AccessibilityInfo.announceForAccessibility(
+          "Login bem-sucedido. Redirecionando para a página inicial."
+        );
       } else {
         Alert.alert("Login Falhou", response.message);
-        AccessibilityInfo.announceForAccessibility("Login falhou. " + response.message);
+        AccessibilityInfo.announceForAccessibility(
+          "Login falhou. " + response.message
+        );
       }
     } else {
       Alert.alert("Erro", "Por favor, insira o e-mail e a senha.");
-      AccessibilityInfo.announceForAccessibility("Erro. Por favor, insira o e-mail e a senha.");
+      AccessibilityInfo.announceForAccessibility(
+        "Erro. Por favor, insira o e-mail e a senha."
+      );
     }
   };
 
@@ -56,36 +60,46 @@ const Login = ({ navigation }) => {
     } else if (text.length > maxLength) {
       setEmailError(`O e-mail deve ter no máximo ${maxLength} caracteres.`);
     } else {
-      setEmailError(""); // Limpa o erro
+      setEmailError("");
     }
 
     if (text.length <= maxLength) {
-      setEmail(text); // Atualiza o campo
+      setEmail(text);
     }
   };
 
   return (
     <ImageBackground
-      source={require("../assets/fundo2.jpg")} // Verifique o caminho da imagem de fundo
+      source={require("../assets/fundo2.jpg")}
       style={styles.background}
       resizeMode="cover"
     >
       <View style={[styles.container, highContrast && styles.highContrast]}>
         <Image
-          source={require("../assets/esuda.jpg")} // Verifique o caminho da imagem
+          source={require("../assets/esuda.jpg")}
           style={styles.logo}
         />
 
-        <View style={styles.modal}>
-          <Text style={[styles.title, highContrast && styles.highContrastText]} accessibilityRole="header">Login</Text>
+        <View
+          style={[
+            styles.modal,
+            highContrast && styles.highContrastModal, // Modal preto no alto contraste
+          ]}
+        >
+          <Text
+            style={[styles.title, highContrast && { color: "#fff" }]}
+            accessibilityRole="header"
+          >
+            Login
+          </Text>
 
           {/* Campo de e-mail */}
           <View style={styles.inputContainer}>
             <Icon name="at" size={20} color="#000" style={styles.icon} />
             <TextInput
-              style={[styles.input, highContrast && styles.highContrastText]}
+              style={[styles.input, highContrast && { color: "#000" }]}
               placeholder="E-mail"
-              placeholderTextColor={highContrast ? "#ccc" : "#000"}
+              placeholderTextColor={highContrast ? "#888" : "#000"}
               value={email}
               onChangeText={handleEmailChange}
               keyboardType="email-address"
@@ -94,25 +108,29 @@ const Login = ({ navigation }) => {
             />
           </View>
           {emailError ? (
-            <Text style={[styles.errorText, highContrast && styles.highContrastText]}>
+            <Text style={[styles.errorText, highContrast && { color: "#fff" }]}>
               {emailError}
             </Text>
           ) : null}
-          
+
           {/* Campo de senha */}
           <View style={styles.inputContainer}>
             <Icon name="lock" size={20} color="#000" style={styles.icon} />
             <TextInput
-               style={[styles.input, highContrast && styles.highContrastText]}
-               placeholder="Senha"
-               placeholderTextColor={highContrast ? "#ccc" : "#000"}
-               value={password}
-               onChangeText={setPassword}
-               secureTextEntry={!showPassword}
-               accessibilityLabel="Campo de senha"
-             />
+              style={[styles.input, highContrast && { color: "#000" }]}
+              placeholder="Senha"
+              placeholderTextColor={highContrast ? "#888" : "#000"}
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              accessibilityLabel="Campo de senha"
+            />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Icon name={showPassword ? "eye" : "eye-slash"} size={20} color="#000" />
+              <Icon
+                name={showPassword ? "eye" : "eye-slash"}
+                size={20}
+                color="#000"
+              />
             </TouchableOpacity>
           </View>
 
@@ -131,13 +149,15 @@ const Login = ({ navigation }) => {
             )}
           </TouchableOpacity>
 
-          {/* Links Esqueci Minha Senha e Primeiro Acesso */}
+          {/* Links */}
           <TouchableOpacity
             onPress={() => navigation.navigate("EsqueciSenha")}
             accessibilityRole="button"
             accessibilityLabel="Esqueci minha senha"
           >
-            <Text style={styles.linkText}>Esqueci minha senha</Text>
+            <Text style={[styles.linkText, { color: "blue" }]}>
+              Esqueci minha senha
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -145,9 +165,12 @@ const Login = ({ navigation }) => {
             accessibilityRole="button"
             accessibilityLabel="Primeiro acesso"
           >
-            <Text style={styles.linkText}>Primeiro acesso</Text>
+            <Text style={[styles.linkText, { color: "blue" }]}>
+              Primeiro acesso
+            </Text>
           </TouchableOpacity>
-          
+
+          {/* Botão Acessibilidade */}
           <TouchableOpacity
             style={styles.accessibilityButton}
             onPress={toggleAccessibilityOptions}
@@ -164,8 +187,8 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   container: {
     flex: 1,
@@ -175,6 +198,11 @@ const styles = StyleSheet.create({
   },
   highContrast: {
     backgroundColor: "#000",
+  },
+  highContrastModal: {
+    backgroundColor: "#000", // Torna o modal preto no alto contraste
+    borderColor: "#fff", // Adiciona uma borda branca opcional para destaque
+    borderWidth: 1,
   },
   accessibilityButton: {
     position: "absolute",
@@ -191,9 +219,9 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     elevation: 5,
-    width: "90%", // Ajusta a largura do modal para ser mais responsivo
+    width: "90%",
     alignItems: "center",
-    marginTop: 100, // Adiciona margem superior para dar espaço para a imagem
+    marginTop: 100,
   },
   title: {
     fontSize: 24,
@@ -201,15 +229,12 @@ const styles = StyleSheet.create({
     color: "#d86615",
     marginBottom: 20,
   },
-  highContrastText: {
-    color: "#fff",
-  },
   logo: {
-    width: 300, // Ajuste o tamanho da imagem conforme necessário
+    width: 300,
     height: 130,
-    position: 'absolute',
-    top: 90, // Ajuste a posição vertical conforme necessário
-    alignSelf: 'center', // Centraliza a imagem horizontalmente
+    position: "absolute",
+    top: 90,
+    alignSelf: "center",
     borderRadius: 5,
   },
   inputContainer: {
@@ -220,21 +245,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
-    borderWidth: 1, // Adiciona a borda
-    borderColor: "#ccc", // Cor da borda
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
   input: {
     flex: 1,
     padding: 10,
     color: "#000",
   },
-  errorText: {
-    color: "red",
-    fontSize: 12,
-    marginBottom: 10,
-  },
   icon: {
-    marginRight: 10,
+    marginRight: 10, // Adicionando espaço entre o ícone e o campo de texto
   },
   errorText: {
     color: "red",
